@@ -1,1 +1,9 @@
-
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.ElkasariDsp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:statusBarColor">@color/dsp_bg</item>
+        <item name="android:navigationBarColor">@color/dsp_bg</item>
+        <item name="android:windowBackground">@color/dsp_bg</item>
+        <item name="colorPrimary">@color/dsp_cyan</item>
+    </style>
+</resources>

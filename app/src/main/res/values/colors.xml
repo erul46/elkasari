@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="dsp_bg">#0B0C10</color>
+    <color name="dsp_panel">#11151F</color>
+    <color name="dsp_cyan">#00E5FF</color>
+</resources>
