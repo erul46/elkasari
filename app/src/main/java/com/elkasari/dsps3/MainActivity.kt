@@ -98,28 +98,36 @@ class MainActivity : AppCompatActivity() {
                 return assetLoader.shouldInterceptRequest(request.url)
             }
 
-            override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
-                super.onPageStarted(view, url, favicon)
-                view.evaluateJavascript(WEB_BLUETOOTH_POLYFILL_JS, null)
-            }
+        override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
+    super.onPageStarted(view, url, favicon)
+    if (url != null && url.startsWith("https://appassets.androidplatform.net/")) {
+        view.evaluateJavascript(WEB_BLUETOOTH_POLYFILL_JS, null)
+    }
+}
 
-            override fun onPageFinished(view: WebView, url: String?) {
-                super.onPageFinished(view, url)
-                view.evaluateJavascript(WEB_BLUETOOTH_POLYFILL_JS, null)
-            }
+        override fun onPageFinished(view: WebView, url: String?) {
+    super.onPageFinished(view, url)
+    if (url != null && url.startsWith("https://appassets.androidplatform.net/")) {
+        view.evaluateJavascript(WEB_BLUETOOTH_POLYFILL_JS, null)
+    }
+}
 
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest): Boolean {
                 val url = request.url.toString()
                 if (url.startsWith("https://appassets.androidplatform.net/")) {
                     return false
                 }
-                if (url.startsWith("intent://")) {
-                    try {
-                        val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME)
-                        startActivity(intent)
-                    } catch (_: Exception) {}
-                    return true
-                }
+if (url.startsWith("intent://")) {
+    try {
+        val intent = Intent.parseUri(url, Intent.URI_INTENT_SCHEME).apply {
+            addCategory(Intent.CATEGORY_BROWSABLE)
+            component = null
+            selector = null
+        }
+        startActivity(intent)
+    } catch (_: Exception) {}
+    return true
+}
                 if (url.startsWith("http://") || url.startsWith("https://")) {
                     try {
                         startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
