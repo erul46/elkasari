@@ -4,19 +4,24 @@ plugins {
 }
 
 android {
-    namespace = "com.elkasari.dsps3"
-    compileSdk = 34
-
-    defaultConfig {
-        applicationId = "com.elkasari.dsps3"
-        minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "5.11.0"
+    signingConfigs {
+        create("release") {
+            val ksFile = file("elkasari-release.jks")
+            if (ksFile.exists()) {
+                storeFile = ksFile
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
     }
 
     buildTypes {
         release {
+            val ksFile = file("elkasari-release.jks")
+            if (ksFile.exists()) {
+                signingConfig = signingConfigs.getByName("release")
+            }
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -27,7 +32,6 @@ android {
             isDebuggable = true
         }
     }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -45,3 +49,4 @@ dependencies {
     implementation("androidx.webkit:webkit:1.11.0")
     implementation("com.google.android.material:material:1.12.0")
 }
+
