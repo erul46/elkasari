@@ -23,11 +23,25 @@ jobs:
         with:
           gradle-version: '8.7'
 
-      - name: Build Debug APK (Android 8.0+)
-        run: gradle assembleDebug --no-daemon
+      - name: Siapkan Keystore Release
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "ERROR: Secret KEYSTORE_BASE64 belum diisi di GitHub Secrets!"
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 -d > app/elkasari-release.jks
+
+      - name: Build Release APK (Android 8.0+)
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: gradle assembleRelease --no-daemon
 
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ELKASARI-DSP-S3-v5.11.0-android8-debug
-          path: app/build/outputs/apk/debug/*.apk
+          name: ELKASARI-DSP-S3-v5.11.0-android8-release
+          path: app/build/outputs/apk/release/*.apk
